@@ -1,0 +1,16 @@
+.row {
+    line-height: 0;
+}
+.cell {
+    display: inline-block;
+    background: #ccc;
+    height: 12px;
+    width: 12px;
+    margin: 1px 1px;
+}
+.cell:hover {
+    background: #aaa;
+}
+.cell.alive {
+    background: #0A985B;
+}
