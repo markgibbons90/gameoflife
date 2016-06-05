@@ -67,7 +67,7 @@
         }
         // Now that the grid is created, get all the cells' neighbours and attach to cells
         for (var i = 0; i < cols * rows; i++) {
-            grid[i].neighbours = getNeighbours(i, gridSize, grid);
+            grid[i].neighbours = getNeighbours(grid[i], gridSize, grid);
         }
         return grid;
     }
@@ -128,18 +128,49 @@
         return false;
     }
 
-    function getNeighbours(id, gridSize, grid) {
+    function getNeighbours(cell, gridSize, grid) {
+        var row = parseInt(cell.getAttribute('data-row'));
+        var col = parseInt(cell.getAttribute('data-col'));
+        // If top row
+        if (row === 0) {
+            var rowAbove = gridSize - 1;
+        } else {
+            var rowAbove = row - 1;
+        }
+        // If bottom row
+        if (row === gridSize - 1) {
+            var rowBelow = 0;
+        } else {
+            var rowBelow = row + 1;
+        }
+        // If leftmost column
+        if (col === 0) {
+            var columToTheLeft = gridSize - 1;
+        } else {
+            var columToTheLeft = col - 1;
+        }
+        // If rightmost column
+        if (col === gridSize - 1) {
+            var columnToTheRight = 0;
+        } else {
+            var columnToTheRight = col + 1;
+        }
+
         var neighbours = [
-            grid[id - gridSize - 1],
-            grid[id - gridSize],
-            grid[id - gridSize + 1],
-            grid[id - 1],
-            grid[id + 1],
-            grid[id + gridSize - 1],
-            grid[id + gridSize],
-            grid[id + gridSize + 1]
+            grid[getIndexFromCoordinates(rowAbove, columToTheLeft, gridSize)],
+            grid[getIndexFromCoordinates(rowAbove, col, gridSize)],
+            grid[getIndexFromCoordinates(rowAbove, columnToTheRight, gridSize)],
+            grid[getIndexFromCoordinates(row, columToTheLeft, gridSize)],
+            grid[getIndexFromCoordinates(row, columnToTheRight, gridSize)],
+            grid[getIndexFromCoordinates(rowBelow, columToTheLeft, gridSize)],
+            grid[getIndexFromCoordinates(rowBelow, col, gridSize)],
+            grid[getIndexFromCoordinates(rowBelow, columnToTheRight, gridSize)]
         ];
         return neighbours;
+    }
+
+    function getIndexFromCoordinates(row, col, numCols) {
+        return row * numCols + col;
     }
 
 })();
