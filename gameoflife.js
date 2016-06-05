@@ -1,47 +1,44 @@
 (function() {
 
     var gridContainer = document.getElementById('grid');
-
     var gridSize = 30;
-
     var grid = createGrid(gridSize, gridSize, gridContainer);
 
-    // randomStart(100, grid);
-    grid[45].alive = true;
-    grid[45].className += ' alive';
-    grid[75].alive = true;
-    grid[75].className += ' alive';
-    grid[105].alive = true;
-    grid[105].className += ' alive';
-
-    var counter = 0;
-
-    // Need to create a snapshot of neighbours rather than a reference to the objects
+    randomStart(200, grid);
 
     setInterval(function() {
         for (var i = 0; i < grid.length; i++) {
-            // var cell = grid[i];
-            // cell.currentNeighbours = cell.neighbours.map(function(neighbour) {
-            //     console.log(neighbour);
-            //     return {alive: neighbour.alive};
-            // });
+            var cell = grid[i];
+            cell.currentNeighbours = cell.neighbours.map(function(neighbour) {
+                alive = neighbour ? neighbour.getAttribute('data-alive') === 'true' : false;
+                return {alive: alive};
+            });
         }
         for (var i = 0; i < grid.length; i++) {
             var cell = grid[i];
-            if (cell.alive) {
+            if (cell.getAttribute('data-alive') === 'true') {
                 if (!survives(cell)) {
-                    cell.alive = false;
-                    cell.className.replace('alive', '');
+                    cell.setAttribute('data-alive', 'false');
                 }
             } else {
                 if (spawns(cell)) {
-                    cell.alive = true;
-                    cell.className += ' alive';
+                    cell.setAttribute('data-alive', 'true');
                 }
             }
         }
-    }, 2000);
+    }, 500);
 
+    /**
+     * Create the blank grid.
+     * @param  {int} cols
+     *   The number of columns
+     * @param  {int} rows
+     *   The number of rows
+     * @param  {DOMElement} container
+     *   The element in which to insert the grid
+     * @return {array}
+     *   Array containing rows containing references to all the cells
+     */
     function createGrid(cols, rows, container) {
         var grid = [];
 
@@ -58,9 +55,9 @@
 
                 cell.className = 'cell';
                 cell.id = '' + i + '-' + j;
-                cell.attributes['data-row'] = i;
-                cell.attributes['data-col'] = j;
-                cell.alive = false;
+                cell.setAttribute('data-row', i);
+                cell.setAttribute('data-col', j);
+                cell.setAttribute('data-alive', 'false');
 
                 // Append the cell to the row
                 row.appendChild(cell);
@@ -75,13 +72,17 @@
         return grid;
     }
 
-    function randomStart(initial, grid) {
+    /**
+     * Initiate the grid with a number of randomly placed live cells.
+     * @param  {int} initialAlive The inital number of live cells
+     * @param  {array} grid       The grid
+     */
+    function randomStart(initialAlive, grid) {
         var size = grid.length;
-        var initialCells = generateUniqueRandomNumbersArray(0, size - 1 ,initial);
+        var initialCells = generateUniqueRandomNumbersArray(0, size - 1 , initialAlive);
         for (var i = 0; i < initialCells.length; i++) {
             var id = initialCells[i];
-            grid[id].className += ' alive';
-            grid[id].alive = true;
+            grid[id].setAttribute('data-alive', 'true');
         }
     }
 
@@ -109,8 +110,9 @@
         }
         if (liveNeighbours === 2 || liveNeighbours === 3) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     function spawns(cell) {

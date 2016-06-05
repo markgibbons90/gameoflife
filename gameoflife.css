@@ -11,6 +11,6 @@
 .cell:hover {
     background: #aaa;
 }
-.cell.alive {
+.cell[data-alive="true"] {
     background: #0A985B;
 }
