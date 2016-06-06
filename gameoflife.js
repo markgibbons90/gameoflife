@@ -1,11 +1,23 @@
 (function() {
 
+    // The element in which we will create the grid
     var gridContainer = document.getElementById('grid');
+
+    // Set some inital variables
+    // The width and height of grid
     var gridSize = 30;
+    // The number of inital live cells
+    var initalLiveCells = 200;
+    // The interval between evolutions in milliseconds
+    var interval = 500;
+
+    // Create the  grid
     var grid = createGrid(gridSize, gridSize, gridContainer);
 
+    // Initiate with randomly placed live cells
     randomStart(200, grid);
 
+    // Re-compute all the live or dead cells at each interval
     setInterval(function() {
         for (var i = 0; i < grid.length; i++) {
             var cell = grid[i];
@@ -26,7 +38,7 @@
                 }
             }
         }
-    }, 500);
+    }, interval);
 
     /**
      * Create the blank grid.
@@ -74,8 +86,10 @@
 
     /**
      * Initiate the grid with a number of randomly placed live cells.
-     * @param  {int} initialAlive The inital number of live cells
-     * @param  {array} grid       The grid
+     * @param  {int} initialAlive
+     *   The inital number of live cells
+     * @param  {array} grid
+     *   The grid
      */
     function randomStart(initialAlive, grid) {
         var size = grid.length;
@@ -86,6 +100,17 @@
         }
     }
 
+    /**
+     * Generate an array of unique random numbers.
+     * @param  {int} min
+     *   The lower limit
+     * @param  {int} max
+     *   The upper limit
+     * @param  {int} size
+     *   The length of the array you wish to generate
+     * @return {array}
+     *   The array of random numbers
+     */
     function generateUniqueRandomNumbersArray(min, max, size) {
         var numbersArray = [];
         while (numbersArray.length < size) {
@@ -97,10 +122,26 @@
         return numbersArray;
     }
 
+    /**
+     * Returns a random integer between an upper and lower limit.
+     * @param  {int} min
+     *   The lower limit
+     * @param  {int} max
+     *   The upper limit
+     * @return {int}
+     *   A random integer
+     */
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min)) + min;
     }
 
+    /**
+     * Returns whether a cell will survive or not based on its current neighbours.
+     * @param  {DOMElement} cell
+     *   The cell
+     * @return {bool}
+     *   Whether or not the cell will survive
+     */
     function survives(cell) {
         var liveNeighbours = 0;
         for (var i = 0; i < cell.currentNeighbours.length; i++) {
@@ -115,6 +156,13 @@
         }
     }
 
+    /**
+     * Returns whether a dead cell will spawn a live cell based on its current neighbours.
+     * @param  {DOMElement} cell
+     *   The cell
+     * @return {bool}
+     *   Whether or not the cell will spawn a live cell
+     */
     function spawns(cell) {
         var liveNeighbours = 0;
         for (var i = 0; i < cell.currentNeighbours.length; i++) {
@@ -128,6 +176,17 @@
         return false;
     }
 
+    /**
+     * Returns a cell's 8 neighbours.
+     * @param  {DOMElement} cell
+     *   The cell
+     * @param  {int} gridSize
+     *   The grid width/height
+     * @param  {array} grid
+     *   Array containing all the grid elements
+     * @return {array}
+     *   Array containing cell's neighbours
+     */
     function getNeighbours(cell, gridSize, grid) {
         var row = parseInt(cell.getAttribute('data-row'));
         var col = parseInt(cell.getAttribute('data-col'));
@@ -169,6 +228,17 @@
         return neighbours;
     }
 
+    /**
+     * Returns a cell's index from its coordinates.
+     * @param  {int} row
+     *   The row the cell is in
+     * @param  {int} col
+     *   The column the cell is in
+     * @param  {int} numCols
+     *   The number of columns
+     * @return {int}
+     *   The index of the cell
+     */
     function getIndexFromCoordinates(row, col, numCols) {
         return row * numCols + col;
     }
