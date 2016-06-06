@@ -8,6 +8,33 @@
     </head>
     <body>
         <h1>Welcome to the Game of Life</h1>
+
+        <p>Here is some schpiel about the game of life...</p>
+
+        <label for="grid-size">Grid Size</label>
+        <select name="grid-size" id="grid-size">
+            <option value="20">20 x 20</option>
+            <option value="30">30 x 30</option>
+            <option value="50">50 x 50</option>
+        </select>
+
+        <label for="initial-live-cells">Initial Live Cells</label>
+        <select name="initial-live-cells" id="inital-live-cells">
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="300">300</option>
+            <option value="400">400</option>
+        </select>
+
+        <label for="interval">Evolution Speed</label>
+        <select name="interval" id="interval">
+            <option value="1000">1 evolution/sec</option>
+            <option value="500">2 evolutions/sec</option>
+            <option value="333">3 evolutions/sec</option>
+        </select>
+
+        <button id="initiate">Go</button>
+
         <div id="grid"></div>
 
         <script src="gameoflife.js"></script>

@@ -5,40 +5,60 @@
 
     // Set some inital variables
     // The width and height of grid
-    var gridSize = 30;
+    var gridSize = 20;
     // The number of inital live cells
-    var initalLiveCells = 200;
+    var initialLiveCells = 100;
     // The interval between evolutions in milliseconds
-    var interval = 500;
+    var interval = 1000;
 
-    // Create the  grid
+    // Create the grid with the inital values
     var grid = createGrid(gridSize, gridSize, gridContainer);
 
-    // Initiate with randomly placed live cells
-    randomStart(200, grid);
+    // Listen to click event on Go button and initiate the process with the selected params
+    document.getElementById('initiate').addEventListener('click', initiate);
 
-    // Re-compute all the live or dead cells at each interval
-    setInterval(function() {
-        for (var i = 0; i < grid.length; i++) {
-            var cell = grid[i];
-            cell.currentNeighbours = cell.neighbours.map(function(neighbour) {
-                alive = neighbour ? neighbour.getAttribute('data-alive') === 'true' : false;
-                return {alive: alive};
-            });
-        }
-        for (var i = 0; i < grid.length; i++) {
-            var cell = grid[i];
-            if (cell.getAttribute('data-alive') === 'true') {
-                if (!survives(cell)) {
-                    cell.setAttribute('data-alive', 'false');
-                }
-            } else {
-                if (spawns(cell)) {
-                    cell.setAttribute('data-alive', 'true');
+    function initiate() {
+        gridSize = document.getElementById('grid-size').value;
+        initialLiveCells = document.getElementById('inital-live-cells').value;
+        interval = document.getElementById('interval').value;
+
+        grid = createGrid(gridSize, gridSize, gridContainer);
+        randomStart(initialLiveCells, grid);
+        console.log(interval);
+        evolve(interval);
+    }
+
+    // Maybe need to unset interval somehow...
+
+    /**
+     * Re-compute all the live or dead cells at each interval.
+     * @param  {int} interval
+     *   Time between each evolution
+     */
+    function evolve(interval) {
+        console.log(interval);
+        setInterval(function() {
+            for (var i = 0; i < grid.length; i++) {
+                var cell = grid[i];
+                cell.currentNeighbours = cell.neighbours.map(function(neighbour) {
+                    alive = neighbour ? neighbour.getAttribute('data-alive') === 'true' : false;
+                    return {alive: alive};
+                });
+            }
+            for (var i = 0; i < grid.length; i++) {
+                var cell = grid[i];
+                if (cell.getAttribute('data-alive') === 'true') {
+                    if (!survives(cell)) {
+                        cell.setAttribute('data-alive', 'false');
+                    }
+                } else {
+                    if (spawns(cell)) {
+                        cell.setAttribute('data-alive', 'true');
+                    }
                 }
             }
-        }
-    }, interval);
+        }, interval);
+    }
 
     /**
      * Create the blank grid.
@@ -52,6 +72,9 @@
      *   Array containing rows containing references to all the cells
      */
     function createGrid(cols, rows, container) {
+        // Clear the container
+        container.innerHTML = '';
+
         var grid = [];
 
         for (var i = 0; i < rows; i++) {
@@ -191,29 +214,13 @@
         var row = parseInt(cell.getAttribute('data-row'));
         var col = parseInt(cell.getAttribute('data-col'));
         // If top row
-        if (row === 0) {
-            var rowAbove = gridSize - 1;
-        } else {
-            var rowAbove = row - 1;
-        }
+        var rowAbove = (row === 0) ? (gridSize - 1) : (row - 1);
         // If bottom row
-        if (row === gridSize - 1) {
-            var rowBelow = 0;
-        } else {
-            var rowBelow = row + 1;
-        }
+        var rowBelow = (row === gridSize - 1) ? 0 : (row + 1);
         // If leftmost column
-        if (col === 0) {
-            var columToTheLeft = gridSize - 1;
-        } else {
-            var columToTheLeft = col - 1;
-        }
+        var columToTheLeft = (col === 0) ? (gridSize - 1) : (col - 1);
         // If rightmost column
-        if (col === gridSize - 1) {
-            var columnToTheRight = 0;
-        } else {
-            var columnToTheRight = col + 1;
-        }
+        var columnToTheRight = (col === gridSize - 1) ? 0 : (col + 1);
 
         var neighbours = [
             grid[getIndexFromCoordinates(rowAbove, columToTheLeft, gridSize)],
