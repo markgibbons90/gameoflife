@@ -3,13 +3,16 @@
     // The element in which we will create the grid
     var gridContainer = document.getElementById('grid');
 
-    // Set some inital variables
+    // Set some initial variables...
+
     // The width and height of grid
     var gridSize = 20;
     // The number of inital live cells
     var initialLiveCells = 100;
     // The interval between evolutions in milliseconds
     var interval = 1000;
+    // Store the id of the timer interval so that we can unset it later
+    window.intervalId = 0;
 
     // Create the grid with the inital values
     var grid = createGrid(gridSize, gridSize, gridContainer);
@@ -24,20 +27,21 @@
 
         grid = createGrid(gridSize, gridSize, gridContainer);
         randomStart(initialLiveCells, grid);
-        console.log(interval);
-        evolve(interval);
+        evolve(interval, window.intervalId);
     }
-
-    // Maybe need to unset interval somehow...
 
     /**
      * Re-compute all the live or dead cells at each interval.
      * @param  {int} interval
      *   Time between each evolution
+     * @param  {int} intervalId
+     *   Javascript's id for the timer interval
      */
-    function evolve(interval) {
-        console.log(interval);
-        setInterval(function() {
+    function evolve(interval, intervalId) {
+        if (intervalId) {
+            window.clearInterval(intervalId);
+        }
+        window.intervalId = setInterval(function() {
             for (var i = 0; i < grid.length; i++) {
                 var cell = grid[i];
                 cell.currentNeighbours = cell.neighbours.map(function(neighbour) {
